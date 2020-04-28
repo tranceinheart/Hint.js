@@ -63,7 +63,7 @@ HTMLCollection.prototype.hint = function(options){
             el.width = hint_node.getBoundingClientRect().width;
             if(el.width > prop.maxWidth){
                 el.width = prop.maxWidth;
-                hint_node.style.width = el.width;
+                hint_node.style.width = el.width + "px";
             }
             el.initial_node_box = el.initial_node.getBoundingClientRect();
             el.initial_x = el.initial_node_box.left + pageXOffset;
@@ -83,8 +83,8 @@ HTMLCollection.prototype.hint = function(options){
             hint_node.style.left = el.x +"px";
             hint_node.style.top = el.y + "px";
             if(hint_node){
-                hint_node_pin.style.left = el.center - el.x;
-                hint_node_pin.style.top = el.height;
+                hint_node_pin.style.left = el.center - el.x + "px";
+                hint_node_pin.style.top = el.height + "px";
             }
         }
     };
