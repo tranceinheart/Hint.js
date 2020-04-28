@@ -1,0 +1,28 @@
+.html-hint-content{
+    border-radius: 5px;
+    background-color: #fff;
+    padding: 8px;
+    box-sizing: border-box;
+}
+.html-hint-pin{
+    border-top: 8px solid #fff;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    margin-left: -6px;
+}
+.html-hint.fadeDown{
+    transition: transform .3s ease, opacity .3s ease;
+    opacity: 0;
+    transform: translate3d(0,-100%,0);
+}
+.html-hint.fadeDown.complete{
+    opacity: 1;
+    transform: translate3d(0,0,0)
+}
+.html-hint.dark .html-hint-content{
+    background-color: rgba(0,0,0,0.8);
+    color: #ffffff;
+}
+.html-hint.dark .html-hint-pin{
+    border-top-color: rgba(0,0,0,0.8);
+}

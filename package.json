@@ -1,0 +1,21 @@
+{
+  "name": "Hint.js",
+  "version": "0.0.1",
+  "description": "A pure JS hint maker",
+  "main": "dist/hint.js",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "hint",
+    "animation",
+    "responsible"
+  ],
+  "author": "Pavel Terekhov",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-uglify": "^3.0.2"
+  }
+}

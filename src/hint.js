@@ -1,0 +1,171 @@
+/**
+ * DOM Hint
+ * Copyright 2020 Pavel Terekhov
+ * Responsible animated custom hints, not sensitive to overflow
+ * Licensed under: SEE LICENSE IN https://github.com/OwlCarousel2/OwlCarousel2/blob/master/LICENSE
+ */
+/*TODO: close button*/
+HTMLCollection.prototype.hint = function(options){
+    if(options == null){
+        options = {}
+    }
+    var hint_node = document.createElement("div"),
+        hint_node_text = document.createElement("div"),
+        hint_node_pin = document.createElement("div"),
+        // holdUntil,
+        margin,
+        createTimeout,
+        removeTimeout;
+    if(options){
+        switch(options.event){
+            case "click": break;
+            default: options.event = "mouseover"; break;
+        }
+    }else{
+        options.event = "mouseover";
+    }
+    var prop = {
+        maxWidth: options.maxWidth || 250,
+        event: options.event,
+        count: this.length,
+        timer: options.timer || 0,
+        wait: options.wait || 0,
+        holdOn: options.holdOn || 0,
+        closeBy: options.closeBy || ["scroll", "resize", "clickOutside"],
+        animate: options.animate || null,
+        duration: options.animateDuration || .3,
+        style: options.theme || "",
+        pin: options.pin || true
+    };
+
+    hint_node.style.position = "absolute";
+    hint_node.classList.add("html-hint", prop.style);
+    hint_node_text.classList.add("html-hint-content");
+    hint_node.appendChild(hint_node_text);
+    if(prop.pin){
+        hint_node_pin.style.position = "absolute";
+        hint_node_pin.classList.add("html-hint-pin");
+        hint_node.appendChild(hint_node_pin);
+        margin = 8;
+    }
+
+    var el = {
+        isExists: false,
+        node: null,
+        width: prop.width,
+        height: 0,
+        x: 0,
+        y: 0,
+        center: 0,
+        offset: 8,
+        setup: function(){
+            el.width = hint_node.offsetWidth;
+            if(el.width > prop.maxWidth){
+                el.width = prop.maxWidth;
+                hint_node.style.width = el.width;
+            }
+            el.height = hint_node.offsetHeight;
+            el.center = el.node.offsetLeft + el.node.offsetWidth/2;
+            if(el.center + el.width/2 + el.offset <= window.innerWidth && el.center - el.width/2 - el.offset >= 0){
+                el.x = el.center - el.width/2;
+            }else{
+                if(el.center + el.width/2 + el.offset > window.innerWidth){
+                    el.x = window.innerWidth - el.offset - el.width
+                }else{
+                    el.x = 5
+                }
+            }
+            el.y = el.node.offsetTop - el.height - margin;
+            hint_node.style.left = el.x +"px";
+            hint_node.style.top = el.y + "px";
+            if(hint_node){
+                hint_node_pin.style.left = el.center - el.x;
+                hint_node_pin.style.top = el.height;
+            }
+        }
+    };
+
+    var removeHint = function(e){
+        console.log("her");
+        if(el.isExists){
+            if(e.type == "click") {
+                if (e.target == el.node) {
+                    return
+                }
+                if (!(e.clientX < el.x || e.clientX > el.x + el.width || e.clientY < el.y || e.clientY > el.height + el.y)) {
+                    return
+                }
+            }
+            document.removeEventListener("click", removeHint);
+            document.removeEventListener("mouseout", removeHint);
+            document.removeEventListener("scroll", removeHint);
+            window.removeEventListener("resize", removeHint,  el.setup);
+
+            if(prop.animate){
+                hint_node.classList.remove("complete");
+                hint_node.addEventListener("transitionend", function it(){
+                    hint_node.removeEventListener("transitionend", it);
+                    hint_node.classList.remove(prop.animate);
+                    hint_node.remove();
+                });
+            }else{
+                hint_node.remove();
+            }
+            el.isExists = false;
+            clearTimeout(removeTimeout);
+            el.width = 0;
+        }
+    };
+    var createHint = function(e) {
+        clearTimeout(removeTimeout);
+        el.node = e.target;
+        var text = el.node.getAttribute("data-hint");
+        if(text == undefined){return}
+        hint_node_text.innerHTML = text;
+        createTimeout = setTimeout(function(){
+            if(prop.event == "click"){
+                if (prop.timer != 0) {
+                    removeTimeout = setTimeout(removeHint, prop.timer, {type: "timer"});
+                }
+                if(prop.closeBy.includes("clickOutside")){
+                    document.addEventListener("click", removeHint);
+                }
+                if(prop.closeBy.includes("scroll")){
+                    document.addEventListener("scroll", removeHint);
+                }
+                if(prop.closeBy.includes("resize")){
+                    window.addEventListener("resize", removeHint);
+                }else{
+                    window.addEventListener("resize", el.setup);
+                }
+                if(prop.closeBy.includes("mouseOut")){
+                    document.addEventListener("mouseout", removeHint);
+                }
+            }
+            if(prop.event == "mouseover"){
+                document.addEventListener("mouseout", removeHint);
+            }
+
+            document.body.appendChild(hint_node);
+            if(prop.animate){
+                hint_node.classList.add(prop.animate);
+                setTimeout(function(){hint_node.classList.add("complete");}, 0)
+            }
+            el.setup();
+            el.isExists = true;
+            /* TODO: Hold until */
+//			if(prop.wait > 0 && prop.holdOn > 0){
+//				holdUntil = new Date().now()
+//			}
+        }, prop.wait);
+        if(prop.event == "mouseover" && prop.wait > 0){
+            window.addEventListener("mouseout", function(){
+                clearTimeout(createTimeout);
+            });
+        }
+    };
+
+    for(var i = 0; i < prop.count; i++){
+        this[i].addEventListener(prop.event, createHint);
+    }
+};
