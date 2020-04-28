@@ -51,14 +51,14 @@ Time delay before showing (sometimes usefull when trigger is mouseover)
 
 **`closeBy:`** (`Array`) (default: ["scroll", "resize", "clickOutside", "mouseOut"])
 
-Set triggers to close the hint.
-Supported parameters
+Set triggers to close the hint. Supported parameters:
    * resize
    * scroll
    * clickOutside
    * mouseOut
    ~~* button (create a exit button inside hint)~~
-Note: hint opened by mouseover close by mouseout automatically
+
+Note: hint opened by mouseover will be closed by mouseout automatically
 
 **`animate:`** (`Array`) (default: null)
 
