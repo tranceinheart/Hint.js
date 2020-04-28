@@ -49,7 +49,7 @@ HTMLCollection.prototype.hint = function(options){
 
     var el = {
         isExists: false,
-        ititial_node: null, // initial
+        initial_node: null, // initial
         initial_x: 0,
         initial_y: 0,
         width: prop.maxWidth,
@@ -66,11 +66,11 @@ HTMLCollection.prototype.hint = function(options){
                 el.width = prop.maxWidth;
                 hint_node.style.width = el.width;
             }
-            var box = el.ititial_node.getBoundingClientRect();
-            el.ititial_node_x = box.left + pageXOffset;
-            el.ititial_node_y = box.top + pageYOffset;
+            var box = el.initial_node.getBoundingClientRect();
+            el.initial_x = box.left + pageXOffset;
+            el.initial_y = box.top + pageYOffset;
             el.height = hint_node.offsetHeight;
-            el.center = el.initial_x + el.ititial_node.offsetWidth/2;
+            el.center = el.initial_x + el.initial_node.offsetWidth/2;
             if(el.center + el.width/2 + el.offset <= window.innerWidth && el.center - el.width/2 - el.offset >= 0){
                 el.x = el.center - el.width/2;
             }else{
@@ -97,7 +97,7 @@ HTMLCollection.prototype.hint = function(options){
     var removeHint = function(e){
         if(el.isExists){
             if(e.type == "click") {
-                if (e.target == el.ititial_node) {
+                if (e.target == el.initial_node) {
                     return
                 }
                 if (!(e.clientX < el.x || e.clientX > el.x + el.width || e.clientY < el.y || e.clientY > el.height + el.y)) {
@@ -123,8 +123,8 @@ HTMLCollection.prototype.hint = function(options){
     var createHint = function(e) {
         clearTimeout(remove_timeout);
         hint_node.removeEventListener("transitionend", safe_animation_remove);
-        el.ititial_node = e.target;
-        var text = prop.data ? prop.data : el.ititial_node.getAttribute("data-hint");
+        el.initial_node = e.target;
+        var text = prop.data ? prop.data : el.initial_node.getAttribute("data-hint");
         if(text == undefined){return}
         hint_node_text.innerHTML = text;
         create_timeout = setTimeout(function(){
@@ -157,6 +157,7 @@ HTMLCollection.prototype.hint = function(options){
                 hint_node.classList.add(prop.animate);
                 setTimeout(function(){hint_node.classList.add("complete");}, 0)
             }
+            
             el.setup();
             el.isExists = true;
             /* TODO: Hold until */
