@@ -1,5 +1,5 @@
 # Hint.js
-A pure JS *responsible* hint maker
+A pure JS **responsible** hint maker
 
 ## Quick Start
 
@@ -52,11 +52,11 @@ Time delay before showing (sometimes usefull when trigger is mouseover)
 **`closeBy:`** (`Array`) (default: ["scroll", "resize", "clickOutside", "mouseOut"])
 
 Set triggers to close the hint. Supported parameters:
-   - resize
-   - scroll
-   - clickOutside
-   - mouseOut
-   - ~~button (create a exit button inside hint)~~
+- resize
+- scroll
+- clickOutside
+- mouseOut
+- ~~button (create a exit button inside hint)~~
 
 Note: hint opened by mouseover will be closed by mouseout automatically
 
@@ -72,13 +72,13 @@ Animation duration in milliseconds (less is faster)
 **`theme:`** (`String`) (default: "white")
 
 Choose a box-ready style of hint
-  - by the background color
-        - "dark"
-        - "light"
-        - own_style_name
-  - for show borders add
-        - "border"
-  - you can add your own styles in css by the **.html-hint.[own_style_name] .html-hint-content** selector
+- by the background color
+    - "dark"
+    - "light"
+    - own_style_name
+- for show borders add
+    - "border"
+- you can add your own styles in css by the **.html-hint.[own_style_name] .html-hint-content** selector
 
 **`text:`** (`String`)
 

@@ -14,16 +14,14 @@ HTMLCollection.prototype.hint = function(options){
         hint_node_pin = document.createElement("div"),
         //hold,
         margin,
-        createTimeout,
-        removeTimeout;
-    if(options){
+        create_timeout,
+        remove_timeout;
+    
         switch(options.trigger){
             case "click": break;
             default: options.trigger = "mouseover"; break;
         }
-    }else{
-        options.trigger = "mouseover";
-    }
+    
     var prop = {
         maxWidth: options.maxWidth || 250,
         trigger: options.trigger,
@@ -88,8 +86,8 @@ HTMLCollection.prototype.hint = function(options){
     };
     var safe_animation_remove = function(){
         hint_node.classList.remove(prop.animate);
-        hint_node.remove();
         hint_node.removeEventListener("transitionend", safe_animation_remove);
+        hint_node.remove();
     };
     var removeHint = function(e){
         if(el.isExists){
@@ -110,24 +108,24 @@ HTMLCollection.prototype.hint = function(options){
                 hint_node.classList.remove("complete");
                 hint_node.addEventListener("transitionend", safe_animation_remove);
             }else{
-                hint_node.removeEventListener("transitionend", safe_animation_remove);
                 hint_node.remove();
             }
             el.isExists = false;
-            clearTimeout(removeTimeout);
+            clearTimeout(remove_timeout);
             el.width = 0;
         }
     };
     var createHint = function(e) {
-        clearTimeout(removeTimeout);
+        clearTimeout(remove_timeout);
+        hint_node.removeEventListener("transitionend", safe_animation_remove);
         el.node = e.target;
         var text = prop.data ? prop.data : el.node.getAttribute("data-hint");
         if(text == undefined){return}
         hint_node_text.innerHTML = text;
-        createTimeout = setTimeout(function(){
+        create_timeout = setTimeout(function(){
             if(prop.trigger == "click"){
                 if (prop.timer != 0) {
-                    removeTimeout = setTimeout(removeHint, prop.timer, {type: "timer"});
+                    remove_timeout = setTimeout(removeHint, prop.timer, {type: "timer"});
                 }
                 if(prop.closeBy.includes("clickOutside")){
                     document.addEventListener("click", removeHint);
@@ -165,7 +163,7 @@ HTMLCollection.prototype.hint = function(options){
         //Cancel waitin
         if(prop.trigger == "mouseover" && prop.wait > 0){
             window.addEventListener("mouseout", function(){
-                clearTimeout(createTimeout);
+                clearTimeout(create_timeout);
             });
         }
     };
