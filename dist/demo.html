@@ -1,0 +1,21 @@
+<html>
+<head>
+	<link rel="stylesheet" href="hint.css">
+</head>
+<body>
+<section style="margin-top: 100px">
+	Hint.js is a power JS script to show a responsive sensitive hints, that also supports HTML. All you have to do is download this package,
+	take a hint.js and hint.css from <span class="show-html-hint" data-hint="You can download files directly from this directory">dist</span> folder and connect in your HTML file.
+</section>
+
+<script src="hint.js"></script>
+<script>
+	document.getElementsByClassName("show-html-hint").hint({
+		theme: "dark",
+		event: "click",
+		closeBy: ["clickOutside"],
+		animate: "fadeDown"
+	});
+</script>
+</body>
+</html>
