@@ -32,28 +32,28 @@ document.getElementsByClassName('your_class').hint({
 
 Allow to force your own text (or HTML).
 
-**`pin:`** (`Boolean`) (Default: true)
+**`pin:`** (`Boolean`) (default: true)
 
 A little triangle near an initial div
 
-**`maxWidth:`** (`Integer`) (Default: 250)
+**`maxWidth:`** (`Integer`) (default: 250)
 
 Allow to set max width
 
-**`trigger:`** (`"click" | "mouseover"`) (Default
+**`trigger:`** (`"click" | "mouseover"`) (default "mouseover")
 
 Set an event to listen
 
-**`timer:`** (`Integer`) (Default: 0) (ms)
+**`timer:`** (`Integer`) (default: 0) (ms)
 
 Hides a hint automatically in milliseconds
 0 - never hide
 
-**`wait:`** (`Integer`) (Default: 0) (ms)
+**`wait:`** (`Integer`) (default: 0) (ms)
 
 Time delay before showing (sometimes usefull when trigger is mouseover)
 
-**`closeBy:`** (`Array`) (Default: ["scroll", "resize", "clickOutside", "mouseOut"])
+**`closeBy:`** (`Array`) (default: ["scroll", "resize", "clickOutside", "mouseOut"])
 
 Set triggers to close the hint.
     Supported parameters
@@ -61,19 +61,19 @@ Set triggers to close the hint.
        * scroll
        * clickOutside
        * mouseOut
-       ~~* button (adds a exit button inside hint)~~
+       ~~* button (create a exit button inside hint)~~
 Note: hint opened by mouseover close by mouseout automatically
 
-**`animate:`** (`Array`) (Default: null)
+**`animate:`** (`Array`) (default: null)
 
 Set an animation effect to show/hide the hint
     - fadeDown
 
-**`duration:`** (`Integer`) (Default: 200) (ms)
+**`duration:`** (`Integer`) (default: 200) (ms)
 
 Animation duration in milliseconds (less is faster)
 
-**`theme:`** (`String`) (Default: "white")
+**`theme:`** (`String`) (default: "white")
 
 Choose a box-ready style of hint
   * by the background color
@@ -84,9 +84,11 @@ Choose a box-ready style of hint
         * "border"
   * you can add your own styles in css by the **.html-hint.[own_style_name] .html-hint-content** selector
 
+==========
+
 Options under development
 
-**`nonWaitMode:`** (`Integer`) (Default: 5000) (ms)
+**`nonWaitMode:`** (`Integer`) (default: 5000) (ms)
 
 If you set a wait option, you also can set a time interval to off the wait option, not to make user to wait if he has already waited
 
