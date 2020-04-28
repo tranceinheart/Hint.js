@@ -49,7 +49,9 @@ HTMLCollection.prototype.hint = function(options){
 
     var el = {
         isExists: false,
-        node: null,
+        ititial_node: null, // initial
+        initial_x: 0,
+        initial_y: 0,
         width: prop.maxWidth,
         height: 0,
         x: 0,
@@ -64,8 +66,11 @@ HTMLCollection.prototype.hint = function(options){
                 el.width = prop.maxWidth;
                 hint_node.style.width = el.width;
             }
+            var box = el.ititial_node.getBoundingClientRect();
+            el.ititial_node_x = box.left + pageXOffset;
+            el.ititial_node_y = box.top + pageYOffset;
             el.height = hint_node.offsetHeight;
-            el.center = el.node.offsetLeft + el.node.offsetWidth/2;
+            el.center = el.initial_x + el.ititial_node.offsetWidth/2;
             if(el.center + el.width/2 + el.offset <= window.innerWidth && el.center - el.width/2 - el.offset >= 0){
                 el.x = el.center - el.width/2;
             }else{
@@ -75,7 +80,7 @@ HTMLCollection.prototype.hint = function(options){
                     el.x = el.offset
                 }
             }
-            el.y = el.node.offsetTop - el.height - margin;
+            el.y = el.initial_y - el.height - margin;
             hint_node.style.left = el.x +"px";
             hint_node.style.top = el.y + "px";
             if(hint_node){
@@ -92,7 +97,7 @@ HTMLCollection.prototype.hint = function(options){
     var removeHint = function(e){
         if(el.isExists){
             if(e.type == "click") {
-                if (e.target == el.node) {
+                if (e.target == el.ititial_node) {
                     return
                 }
                 if (!(e.clientX < el.x || e.clientX > el.x + el.width || e.clientY < el.y || e.clientY > el.height + el.y)) {
@@ -118,8 +123,8 @@ HTMLCollection.prototype.hint = function(options){
     var createHint = function(e) {
         clearTimeout(remove_timeout);
         hint_node.removeEventListener("transitionend", safe_animation_remove);
-        el.node = e.target;
-        var text = prop.data ? prop.data : el.node.getAttribute("data-hint");
+        el.ititial_node = e.target;
+        var text = prop.data ? prop.data : el.ititial_node.getAttribute("data-hint");
         if(text == undefined){return}
         hint_node_text.innerHTML = text;
         create_timeout = setTimeout(function(){
