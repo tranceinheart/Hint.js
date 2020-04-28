@@ -50,8 +50,7 @@ HTMLCollection.prototype.hint = function(options){
     var el = {
         isExists: false,
         initial_node: null, // initial
-        initial_x: 0,
-        initial_y: 0,
+        initial_node_box: null,
         width: prop.maxWidth,
         height: 0,
         x: 0,
@@ -61,16 +60,16 @@ HTMLCollection.prototype.hint = function(options){
         setup: function(){
             hint_node.style = "";
             hint_node.style.position = "absolute";
-            el.width = hint_node.offsetWidth;
+            el.width = hint_node.getBoundingClientRect().width;
             if(el.width > prop.maxWidth){
                 el.width = prop.maxWidth;
                 hint_node.style.width = el.width;
             }
-            var box = el.initial_node.getBoundingClientRect();
-            el.initial_x = box.left + pageXOffset;
-            el.initial_y = box.top + pageYOffset;
-            el.height = hint_node.offsetHeight;
-            el.center = el.initial_x + el.initial_node.offsetWidth/2;
+            el.initial_node_box = el.initial_node.getBoundingClientRect();
+            el.initial_x = el.initial_node_box.left + pageXOffset;
+            el.initial_y = el.initial_node_box.top + pageYOffset;
+            el.height = hint_node.getBoundingClientRect().height;
+            el.center = el.initial_x + el.initial_node_box.width/2;
             if(el.center + el.width/2 + el.offset <= window.innerWidth && el.center - el.width/2 - el.offset >= 0){
                 el.x = el.center - el.width/2;
             }else{
