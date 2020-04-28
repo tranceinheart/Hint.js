@@ -12,33 +12,33 @@ HTMLCollection.prototype.hint = function(options){
     var hint_node = document.createElement("div"),
         hint_node_text = document.createElement("div"),
         hint_node_pin = document.createElement("div"),
-        // holdUntil,
+        //hold,
         margin,
         createTimeout,
         removeTimeout;
     if(options){
-        switch(options.event){
+        switch(options.trigger){
             case "click": break;
-            default: options.event = "mouseover"; break;
+            default: options.trigger = "mouseover"; break;
         }
     }else{
-        options.event = "mouseover";
+        options.trigger = "mouseover";
     }
     var prop = {
         maxWidth: options.maxWidth || 250,
-        event: options.event,
+        trigger: options.trigger,
         count: this.length,
-        timer: options.timer || 0,
-        wait: options.wait || 0,
-        holdOn: options.holdOn || 0,
+        timer: options.timer > 10 ? options.timer : 10,
+        wait: options.wait || 10,
+        holdOn: options.hold || 0,
         closeBy: options.closeBy || ["scroll", "resize", "clickOutside"],
         animate: options.animate || null,
-        duration: options.animateDuration || .3,
-        style: options.theme || "",
+        duration: options.animateDuration || 200,
+        style: options.theme || null,
+        data: options.text || null,
         pin: options.pin || true
     };
 
-    hint_node.style.position = "absolute";
     hint_node.classList.add("html-hint", prop.style);
     hint_node_text.classList.add("html-hint-content");
     hint_node.appendChild(hint_node_text);
@@ -52,13 +52,15 @@ HTMLCollection.prototype.hint = function(options){
     var el = {
         isExists: false,
         node: null,
-        width: prop.width,
+        width: prop.maxWidth,
         height: 0,
         x: 0,
         y: 0,
         center: 0,
-        offset: 8,
+        offset: 2,
         setup: function(){
+            hint_node.style = "";
+            hint_node.style.position = "absolute";
             el.width = hint_node.offsetWidth;
             if(el.width > prop.maxWidth){
                 el.width = prop.maxWidth;
@@ -72,7 +74,7 @@ HTMLCollection.prototype.hint = function(options){
                 if(el.center + el.width/2 + el.offset > window.innerWidth){
                     el.x = window.innerWidth - el.offset - el.width
                 }else{
-                    el.x = 5
+                    el.x = el.offset
                 }
             }
             el.y = el.node.offsetTop - el.height - margin;
@@ -84,9 +86,12 @@ HTMLCollection.prototype.hint = function(options){
             }
         }
     };
-
+    var safe_animation_remove = function(){
+        hint_node.classList.remove(prop.animate);
+        hint_node.remove();
+        hint_node.removeEventListener("transitionend", safe_animation_remove);
+    };
     var removeHint = function(e){
-        console.log("her");
         if(el.isExists){
             if(e.type == "click") {
                 if (e.target == el.node) {
@@ -103,12 +108,9 @@ HTMLCollection.prototype.hint = function(options){
 
             if(prop.animate){
                 hint_node.classList.remove("complete");
-                hint_node.addEventListener("transitionend", function it(){
-                    hint_node.removeEventListener("transitionend", it);
-                    hint_node.classList.remove(prop.animate);
-                    hint_node.remove();
-                });
+                hint_node.addEventListener("transitionend", safe_animation_remove);
             }else{
+                hint_node.removeEventListener("transitionend", safe_animation_remove);
                 hint_node.remove();
             }
             el.isExists = false;
@@ -119,11 +121,11 @@ HTMLCollection.prototype.hint = function(options){
     var createHint = function(e) {
         clearTimeout(removeTimeout);
         el.node = e.target;
-        var text = el.node.getAttribute("data-hint");
+        var text = prop.data ? prop.data : el.node.getAttribute("data-hint");
         if(text == undefined){return}
         hint_node_text.innerHTML = text;
         createTimeout = setTimeout(function(){
-            if(prop.event == "click"){
+            if(prop.trigger == "click"){
                 if (prop.timer != 0) {
                     removeTimeout = setTimeout(removeHint, prop.timer, {type: "timer"});
                 }
@@ -142,7 +144,8 @@ HTMLCollection.prototype.hint = function(options){
                     document.addEventListener("mouseout", removeHint);
                 }
             }
-            if(prop.event == "mouseover"){
+
+            if(prop.trigger == "mouseover"){
                 document.addEventListener("mouseout", removeHint);
             }
 
@@ -158,7 +161,9 @@ HTMLCollection.prototype.hint = function(options){
 //				holdUntil = new Date().now()
 //			}
         }, prop.wait);
-        if(prop.event == "mouseover" && prop.wait > 0){
+
+        //Cancel waitin
+        if(prop.trigger == "mouseover" && prop.wait > 0){
             window.addEventListener("mouseout", function(){
                 clearTimeout(createTimeout);
             });
@@ -166,6 +171,6 @@ HTMLCollection.prototype.hint = function(options){
     };
 
     for(var i = 0; i < prop.count; i++){
-        this[i].addEventListener(prop.event, createHint);
+        this[i].addEventListener(prop.trigger, createHint);
     }
 };

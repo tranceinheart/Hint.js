@@ -1,3 +1,7 @@
+.show-html-hint{
+    border-bottom: 1px dashed #4481ff;
+    cursor: help;
+}
 .html-hint-content{
     border-radius: 5px;
     background-color: #fff;
@@ -13,7 +17,7 @@
 .html-hint.fadeDown{
     transition: transform .3s ease, opacity .3s ease;
     opacity: 0;
-    transform: translate3d(0,-100%,0);
+    transform: translate3d(0,-30%,0);
 }
 .html-hint.fadeDown.complete{
     opacity: 1;
