@@ -9,6 +9,7 @@ HTMLCollection.prototype.hint = function(options){
     if(options == null){
         options = {}
     }
+    var MIN_TIMER = 10;
     var hint_node = document.createElement("div"),
         hint_node_text = document.createElement("div"),
         hint_node_pin = document.createElement("div"),
@@ -27,7 +28,7 @@ HTMLCollection.prototype.hint = function(options){
         maxWidth: options.maxWidth || 250,
         trigger: options.trigger,
         count: this.length,
-        timer: options.timer > 10 ? options.timer : 10,
+        timer: options.timer > MIN_TIMER ? options.timer : MIN_TIMER,
         wait: options.wait || 10,
         holdOn: options.hold || 0,
         closeBy: options.closeBy || ["scroll", "resize", "clickOutside"],
@@ -109,7 +110,7 @@ HTMLCollection.prototype.hint = function(options){
             document.removeEventListener("mouseout", removeHint);
             document.removeEventListener("scroll", removeHint);
             window.removeEventListener("resize", removeHint,  el.setup);
-
+            console.log(e.type);
             if(prop.animate){
                 hint_node.classList.remove("complete");
                 hint_node.addEventListener("transitionend", safe_animation_remove);
@@ -130,7 +131,7 @@ HTMLCollection.prototype.hint = function(options){
         hint_node_text.innerHTML = text;
         create_timeout = setTimeout(function(){
             if(prop.trigger == "click"){
-                if (prop.timer != 0) {
+                if (prop.timer > MIN_TIMER) {
                     remove_timeout = setTimeout(removeHint, prop.timer, {type: "timer"});
                 }
                 if(prop.closeBy.includes("clickOutside")){
@@ -156,7 +157,8 @@ HTMLCollection.prototype.hint = function(options){
             document.body.appendChild(hint_node);
             if(prop.animate){
                 hint_node.classList.add(prop.animate);
-                setTimeout(function(){hint_node.classList.add("complete");}, 0)
+                setTimeout(function(){hint_node.classList.add("complete");}, 0);
+
             }
             
             el.setup();
