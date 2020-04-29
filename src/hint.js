@@ -14,6 +14,7 @@ HTMLCollection.prototype.hint = function(options){
         hint_node_pin = document.createElement("div"),
         //hold,
         margin,
+        body_offset,
         create_timeout,
         remove_timeout;
     
@@ -60,13 +61,14 @@ HTMLCollection.prototype.hint = function(options){
         setup: function(){
             hint_node.style = "";
             hint_node.style.position = "absolute";
+            body_offset = document.body.getBoundingClientRect().left;
             el.width = hint_node.getBoundingClientRect().width;
             if(el.width > prop.maxWidth){
                 el.width = prop.maxWidth;
                 hint_node.style.width = el.width + "px";
             }
             el.initial_node_box = el.initial_node.getBoundingClientRect();
-            el.initial_x = el.initial_node_box.left + pageXOffset;
+            el.initial_x = el.initial_node_box.left + pageXOffset - body_offset;
             el.initial_y = el.initial_node_box.top + pageYOffset;
             el.height = hint_node.getBoundingClientRect().height;
             el.center = el.initial_x + el.initial_node_box.width/2;
