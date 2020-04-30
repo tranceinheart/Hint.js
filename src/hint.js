@@ -79,7 +79,6 @@ HTMLCollection.prototype.hint = function(options){
                     el.x = el.offset
                 }
             }
-            console.log(el.initial_y, el.height);
             switch (prop.vertical){
                 case "middle":
                     el.y = el.initial_y + el.initial_node_box.height/2 - el.height;

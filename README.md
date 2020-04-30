@@ -28,7 +28,7 @@ document.getElementsByClassName('your_class').hint({
 
 ## Options
 
-**`pin:`** (`Boolean`) (default: true)
+**`pin:`** (`Boolean`) (default: false)
 
 A little triangle near an initial div
 
