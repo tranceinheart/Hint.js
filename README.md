@@ -49,6 +49,8 @@ Hides a hint automatically in milliseconds
 
 Time delay before showing (sometimes usefull when trigger is mouseover)
 
+**`vertical:`** (`"top" | "middle" | "bottom"`)
+
 **`closeBy:`** (`Array`) (default: ["scroll", "resize", "clickOutside", "mouseOut"])
 
 Set triggers to close the hint. Supported parameters:
@@ -56,18 +58,14 @@ Set triggers to close the hint. Supported parameters:
 - scroll
 - clickOutside
 - mouseOut
-- ~~button (create a exit button inside hint)~~
+- button (exit button inside hint)
 
 Note: hint opened by mouseover will be closed by mouseout automatically
 
 **`animate:`** (`Array`) (default: null)
 
 Set an animation effect to show/hide the hint
-    - fadeDown
-
-**`duration:`** (`Integer`) (default: 200) (ms)
-
-Animation duration in milliseconds (less is faster)
+- fadeDown
 
 **`theme:`** (`String`) (default: "white")
 
@@ -95,6 +93,6 @@ If you set a wait option, you also can set a time interval to off the wait optio
 
 ## Author
 
-Pavel Terehov [@tranceinheart](https://instagram.com/tranceinheart)
+Pavel Terehov
 
 Copyright &copy; 2020 Pavel Terehov. MIT License.
