@@ -13,8 +13,9 @@ HTMLCollection.prototype.hint = function(options){
     var hint_node = document.createElement("div"),
         hint_node_text = document.createElement("div"),
         hint_node_pin = document.createElement("div"),
+        hint_node_close_button = document.createElement("div"),
         //hold,
-        margin,
+        margin = 0,
         body_offset,
         create_timeout,
         remove_timeout;
@@ -36,18 +37,13 @@ HTMLCollection.prototype.hint = function(options){
         duration: options.animateDuration || 200,
         style: options.theme || null,
         data: options.text || null,
-        pin: options.pin || true
+        vertical: options.vertical || "top",
+        pin: options.pin || false
     };
 
     hint_node.classList.add("html-hint", prop.style);
     hint_node_text.classList.add("html-hint-content");
     hint_node.appendChild(hint_node_text);
-    if(prop.pin){
-        hint_node_pin.style.position = "absolute";
-        hint_node_pin.classList.add("html-hint-pin");
-        hint_node.appendChild(hint_node_pin);
-        margin = 8;
-    }
 
     var el = {
         isExists: false,
@@ -69,8 +65,9 @@ HTMLCollection.prototype.hint = function(options){
                 hint_node.style.width = el.width + "px";
             }
             el.initial_node_box = el.initial_node.getBoundingClientRect();
-            el.initial_x = el.initial_node_box.left + pageXOffset - body_offset;
-            el.initial_y = el.initial_node_box.top + pageYOffset;
+            el.initial_x = el.initial_node_box.left - body_offset;
+            el.initial_y = el.initial_node_box.top;
+
             el.height = hint_node.getBoundingClientRect().height;
             el.center = el.initial_x + el.initial_node_box.width/2;
             if(el.center + el.width/2 + el.offset <= window.innerWidth && el.center - el.width/2 - el.offset >= 0){
@@ -82,10 +79,22 @@ HTMLCollection.prototype.hint = function(options){
                     el.x = el.offset
                 }
             }
-            el.y = el.initial_y - el.height - margin;
+            console.log(el.initial_y, el.height);
+            switch (prop.vertical){
+                case "middle":
+                    el.y = el.initial_y + el.initial_node_box.height/2 - el.height;
+                    break;
+                case "bottom":
+                    el.y = el.initial_y + el.initial_node_box.height + margin;
+                    break;
+                default:
+                    el.y = el.initial_y - el.height - margin;
+                    break;
+            }
+            
             hint_node.style.left = el.x +"px";
             hint_node.style.top = el.y + "px";
-            if(hint_node){
+            if(prop.pin){
                 hint_node_pin.style.left = el.center - el.x + "px";
                 hint_node_pin.style.top = el.height + "px";
             }
@@ -98,7 +107,7 @@ HTMLCollection.prototype.hint = function(options){
     };
     var removeHint = function(e){
         if(el.isExists){
-            if(e.type == "click") {
+            if(e.type == "click" && e.target != hint_node_close_button) {
                 if (e.target == el.initial_node) {
                     return
                 }
@@ -110,7 +119,6 @@ HTMLCollection.prototype.hint = function(options){
             document.removeEventListener("mouseout", removeHint);
             document.removeEventListener("scroll", removeHint);
             window.removeEventListener("resize", removeHint,  el.setup);
-            console.log(e.type);
             if(prop.animate){
                 hint_node.classList.remove("complete");
                 hint_node.addEventListener("transitionend", safe_animation_remove);
@@ -179,5 +187,18 @@ HTMLCollection.prototype.hint = function(options){
 
     for(var i = 0; i < prop.count; i++){
         this[i].addEventListener(prop.trigger, createHint);
+    }
+
+    if(prop.pin){
+        hint_node_pin.style.position = "absolute";
+        hint_node_pin.classList.add("html-hint-pin");
+        hint_node.appendChild(hint_node_pin);
+        margin = 8;
+    }
+    if(prop.closeBy.includes("button")){
+        hint_node.classList.add("close-button");
+        hint_node.appendChild(hint_node_close_button);
+        hint_node_close_button.classList.add("html-hint-close");
+        hint_node_close_button.addEventListener("click", removeHint);
     }
 };
