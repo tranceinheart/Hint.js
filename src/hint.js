@@ -66,7 +66,7 @@ HTMLCollection.prototype.hint = function(options){
             }
             el.initial_node_box = el.initial_node.getBoundingClientRect();
             el.initial_x = el.initial_node_box.left - body_offset;
-            el.initial_y = el.initial_node_box.top;
+            el.initial_y = el.initial_node_box.top + window.pageYOffset;
 
             el.height = hint_node.getBoundingClientRect().height;
             el.center = el.initial_x + el.initial_node_box.width/2;
