@@ -11,6 +11,7 @@ HTMLCollection.prototype.hint = function(options){
     }
     var MIN_TIMER = 10;
     var hint_node = document.createElement("div"),
+        hint_holder =  document.createElement("div"),
         hint_node_text = document.createElement("div"),
         hint_node_pin = document.createElement("div"),
         hint_node_close_button = document.createElement("div"),
@@ -37,12 +38,13 @@ HTMLCollection.prototype.hint = function(options){
         duration: options.animateDuration || 200,
         style: options.theme || null,
         data: options.text || null,
-        vertical: options.vertical || "top",
+        position: options.position || "top",
         pin: options.pin || false
     };
-
+    hint_holder.style = "position: absolute; left: 0; top: 0; height: 0; width: 100%";
     hint_node.classList.add("html-hint", prop.style);
     hint_node_text.classList.add("html-hint-content");
+    hint_holder.appendChild(hint_node);
     hint_node.appendChild(hint_node_text);
 
     var el = {
@@ -58,19 +60,19 @@ HTMLCollection.prototype.hint = function(options){
         setup: function(){
             hint_node.style = "";
             hint_node.style.position = "absolute";
-            body_offset = document.body.getBoundingClientRect().left;
+            body_offset = hint_holder.getBoundingClientRect();
             el.width = hint_node.getBoundingClientRect().width;
             if(el.width > prop.maxWidth){
                 el.width = prop.maxWidth;
                 hint_node.style.width = el.width + "px";
             }
             el.initial_node_box = el.initial_node.getBoundingClientRect();
-            el.initial_x = el.initial_node_box.left - body_offset;
-            el.initial_y = el.initial_node_box.top + window.pageYOffset;
+            el.initial_x = el.initial_node_box.left - body_offset.left;
+            el.initial_y = el.initial_node_box.top - body_offset.top;
 
             el.height = hint_node.getBoundingClientRect().height;
             el.center = el.initial_x + el.initial_node_box.width/2;
-            if(el.center + el.width/2 + el.offset <= window.innerWidth && el.center - el.width/2 - el.offset >= 0){
+            if(el.center + el.width/2 + el.offset <= window.innerWidth && el.center - el.width/2 - el.offset >= 0 && prop.position != "cursor"){
                 el.x = el.center - el.width/2;
             }else{
                 if(el.center + el.width/2 + el.offset > window.innerWidth){
@@ -79,11 +81,15 @@ HTMLCollection.prototype.hint = function(options){
                     el.x = el.offset
                 }
             }
-            switch (prop.vertical){
+            switch (prop.position){
                 case "middle":
                     el.y = el.initial_y + el.initial_node_box.height/2 - el.height;
                     break;
                 case "bottom":
+                    el.y = el.initial_y + el.initial_node_box.height + margin;
+                    break;
+                case "cursor":
+                    el.x = 
                     el.y = el.initial_y + el.initial_node_box.height + margin;
                     break;
                 default:
@@ -102,7 +108,7 @@ HTMLCollection.prototype.hint = function(options){
     var safe_animation_remove = function(){
         hint_node.classList.remove(prop.animate);
         hint_node.removeEventListener("transitionend", safe_animation_remove);
-        hint_node.remove();
+        hint_holder.remove();
     };
     var removeHint = function(e){
         if(el.isExists){
@@ -133,7 +139,14 @@ HTMLCollection.prototype.hint = function(options){
         clearTimeout(remove_timeout);
         hint_node.removeEventListener("transitionend", safe_animation_remove);
         el.initial_node = e.target;
-        var text = prop.data ? prop.data : el.initial_node.getAttribute("data-hint");
+        var text = prop.data ? prop.data : (el.initial_node.getAttribute("data-hint"));
+        if(text[0] == "#"){
+            var node_pointer = text.slice(1);
+            if(document.getElementById(node_pointer)){
+                text = document.getElementById(node_pointer).innerHTML;
+            }
+        }
+
         if(text == undefined){return}
         hint_node_text.innerHTML = text;
         create_timeout = setTimeout(function(){
@@ -161,7 +174,7 @@ HTMLCollection.prototype.hint = function(options){
                 document.addEventListener("mouseout", removeHint);
             }
 
-            document.body.appendChild(hint_node);
+            document.body.appendChild(hint_holder);
             if(prop.animate){
                 hint_node.classList.add(prop.animate);
                 setTimeout(function(){hint_node.classList.add("complete");}, 0);

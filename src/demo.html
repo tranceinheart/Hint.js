@@ -50,16 +50,18 @@
     Hint.js is a power JS script to show a responsive sensitive hints, that also supports HTML. All you have to do is download this <span class="show-html-hint2" data-hint="You can download files directly from this directory">package</span>,
     take a hint.js and hint.css from <span class="show-html-hint" data-hint="You can download files directly from this directory">dist</span> folder and connect in your HTML file.
     Hint.js is a power JS script to show a responsive sensitive hints, that also supports HTML. All you have to do is download this <span class="show-html-hint2" data-hint="You can download files directly from this directory">package</span>,
-    take a hint.js and hint.css from <span class="show-html-hint" data-hint="You can download files <b>directly</b> from this directory">dist</span> folder and connect in your HTML file.
+    take a hint.js and hint.css from <span class="show-html-hint" data-hint="#interestingHint">dist</span> folder and connect in your HTML file.
 </section>
-
+<div id="interestingHint">Hint block</div>
 <script src="hint.js"></script>
 <script>
     document.getElementsByClassName("show-html-hint").hint({
-        theme: "border",
+        theme: "dark",
         trigger: "click",
-        closeBy: ["clickOutside", "button"],
-        vertical: "middle"
+        closeBy: ["clickOutside", "scroll", "button"],
+        vertical: "top",
+        animate: "fadeDown",
+        pin: true
     });
 </script>
 </body>
