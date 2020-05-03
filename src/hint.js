@@ -128,7 +128,7 @@ HTMLCollection.prototype.hint = function(options){
                 hint_node.classList.remove("complete");
                 hint_node.addEventListener("transitionend", safe_animation_remove);
             }else{
-                hint_node.remove();
+                hint_holder.remove();
             }
             el.isExists = false;
             clearTimeout(remove_timeout);
