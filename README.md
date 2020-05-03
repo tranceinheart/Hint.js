@@ -62,10 +62,9 @@ Set triggers to close the hint. Supported parameters:
 
 Note: hint opened by mouseover will be closed by mouseout automatically
 
-**`animate:`** (`Array`) (default: null)
+**`animate:`** (`Boolean`) (default: false)
 
 Set an animation effect to show/hide the hint
-- fadeDown
 
 **`theme:`** (`String`) (default: "white")
 
@@ -73,9 +72,6 @@ Choose a box-ready style of hint
 - by the background color
     - "dark"
     - "light"
-    - own_style_name
-- for show borders add
-    - "border"
 - you can add your own styles in css by the **.html-hint.[own_style_name] .html-hint-content** selector
 
 **`text:`** (`String`)

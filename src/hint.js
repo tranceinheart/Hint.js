@@ -29,7 +29,7 @@ HTMLCollection.prototype.hint = function(options){
         trigger: options.trigger,
         count: this.length,
         timer: options.timer > MIN_TIMER ? options.timer : MIN_TIMER,
-        wait: options.wait || 10,
+        wait: options.delay || 10,
         holdOn: options.hold || 0,
         closeBy: options.closeBy || ["scroll", "resize", "clickOutside"],
         animate: options.animate || false,
