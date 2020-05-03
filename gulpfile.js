@@ -1,5 +1,6 @@
-var gulp = require('gulp');
-const minify = require('gulp-uglify');
+const gulp = require('gulp'),
+    minify = require('gulp-uglify'),
+    sass = require('gulp-sass');
 
 // Move the javascript files into our /src/js folder
 gulp.task('js', function() {
@@ -7,4 +8,9 @@ gulp.task('js', function() {
         .pipe(minify())
         .pipe(gulp.dest("./dist"));
 });
-gulp.task('default', gulp.series('js'));
+gulp.task('sass', function() {
+    return gulp.src(["src/*.sass"])
+        .pipe(sass({outputStyle: 'expanded'}))
+        .pipe(gulp.dest('./dist'));
+});
+gulp.task('default', gulp.series('js', 'sass'));

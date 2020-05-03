@@ -17,7 +17,6 @@ HTMLCollection.prototype.hint = function(options){
         hint_node_close_button = document.createElement("div"),
         //hold,
         margin = 0,
-        body_offset,
         create_timeout,
         remove_timeout;
     
@@ -38,8 +37,9 @@ HTMLCollection.prototype.hint = function(options){
         duration: options.animateDuration || 200,
         style: options.theme || null,
         data: options.text || null,
-        position: options.position || "top",
-        pin: options.pin || false
+        position: options.vertical || "auto",
+        pin: options.pin || false,
+        stickiness: options.stickiness || 16
     };
     hint_holder.style = "position: absolute; left: 0; top: 0; height: 0; width: 100%";
     hint_node.classList.add("html-hint", prop.style);
@@ -56,23 +56,21 @@ HTMLCollection.prototype.hint = function(options){
         x: 0,
         y: 0,
         center: 0,
-        offset: 2,
-        setup: function(){
+        position: "auto",
+        offset: 2, // offset from window border
+        setup: function(e){
             hint_node.style = "";
             hint_node.style.position = "absolute";
-            body_offset = hint_holder.getBoundingClientRect();
             el.width = hint_node.getBoundingClientRect().width;
             if(el.width > prop.maxWidth){
                 el.width = prop.maxWidth;
                 hint_node.style.width = el.width + "px";
             }
-            el.initial_node_box = el.initial_node.getBoundingClientRect();
-            el.initial_x = el.initial_node_box.left - body_offset.left;
-            el.initial_y = el.initial_node_box.top - body_offset.top;
 
+            el.initial_node_box = el.initial_node.getBoundingClientRect();
             el.height = hint_node.getBoundingClientRect().height;
-            el.center = el.initial_x + el.initial_node_box.width/2;
-            if(el.center + el.width/2 + el.offset <= window.innerWidth && el.center - el.width/2 - el.offset >= 0 && prop.position != "cursor"){
+            el.center = e.clientX;
+            if(el.center + el.width/2 + el.offset <= window.innerWidth && el.center - el.width/2 - el.offset >= 0){
                 el.x = el.center - el.width/2;
             }else{
                 if(el.center + el.width/2 + el.offset > window.innerWidth){
@@ -81,27 +79,54 @@ HTMLCollection.prototype.hint = function(options){
                     el.x = el.offset
                 }
             }
-            switch (prop.position){
+
+            if(prop.position == "auto"){
+                if(el.initial_node_box.y + el.initial_node_box.height + el.height < window.innerHeight){
+                    el.position = "bottom";
+                }else{
+                    el.position = "top";
+                }
+                if(el.initial_node_box.y - el.height > 0){
+                    el.position = "top";
+                }else{
+                    el.position = "bottom";
+                }
+            }else{
+                el.position = prop.position
+            }
+
+            switch (el.position){
                 case "middle":
-                    el.y = el.initial_y + el.initial_node_box.height/2 - el.height;
+                    el.y = e.clientY + el.initial_node_box.height/2 - el.height;
+                    break;
+                case "top":
+                    if(e.clientY - el.initial_node_box.y > prop.stickiness){
+                        el.y = el.initial_node_box.y + el.initial_node_box.height - prop.stickiness - el.height - margin;
+                    }else{
+                        el.y = el.initial_node_box.y - el.height - margin;
+                    }
                     break;
                 case "bottom":
-                    el.y = el.initial_y + el.initial_node_box.height + margin;
-                    break;
-                case "cursor":
-                    el.x = 
-                    el.y = el.initial_y + el.initial_node_box.height + margin;
-                    break;
-                default:
-                    el.y = el.initial_y - el.height - margin;
+                    if((el.initial_node_box.y + el.initial_node_box.height) - e.clientY > prop.stickiness){
+                        el.y = el.initial_node_box.y + prop.stickiness + margin;
+                    }else{
+                        el.y = el.initial_node_box.y + el.initial_node_box.height + margin;
+                    }
+                    hint_node.classList.add("position-bottom");
                     break;
             }
             
             hint_node.style.left = el.x +"px";
             hint_node.style.top = el.y + "px";
             if(prop.pin){
-                hint_node_pin.style.left = el.center - el.x + "px";
-                hint_node_pin.style.top = el.height + "px";
+                var position = el.center - el.x;
+                if(position < 9){
+                    position = 9;
+                }
+                if(position > el.width - 9){
+                    position = el.width - 9;
+                }
+                hint_node_pin.style.left = position + "px";
             }
         }
     };
@@ -112,11 +137,25 @@ HTMLCollection.prototype.hint = function(options){
     };
     var removeHint = function(e){
         if(el.isExists){
+            if(prop.trigger == "mouseover"){
+                if(e.type == "mouseout"){
+                    if(el.position == "bottom"){
+                        if (e.clientX > el.x && e.clientX < el.x + el.width && e.clientY + prop.stickiness > el.y && e.clientY < el.height + el.y){
+                            return
+                        }
+                    }
+                    if(el.position == "top"){
+                        if (e.clientX > el.x && e.clientX < el.x + el.width && e.clientY > el.y && e.clientY < el.height + el.y + prop.stickiness){
+                            return
+                        }
+                    }
+                }
+            }
             if(e.type == "click" && e.target != hint_node_close_button) {
                 if (e.target == el.initial_node) {
                     return
                 }
-                if (!(e.clientX < el.x || e.clientX > el.x + el.width || e.clientY < el.y || e.clientY > el.height + el.y)) {
+                if (!(e.clientX <= el.x || e.clientX >= el.x + el.width || e.clientY < el.y || e.clientY > el.height + el.y)) {
                     return
                 }
             }
@@ -131,6 +170,7 @@ HTMLCollection.prototype.hint = function(options){
                 hint_holder.remove();
             }
             el.isExists = false;
+            hint_node.classList.remove("position-bottom");
             clearTimeout(remove_timeout);
             el.width = 0;
         }
@@ -140,6 +180,7 @@ HTMLCollection.prototype.hint = function(options){
         hint_node.removeEventListener("transitionend", safe_animation_remove);
         el.initial_node = e.target;
         var text = prop.data ? prop.data : (el.initial_node.getAttribute("data-hint"));
+        if(text == undefined){return}
         if(text[0] == "#"){
             var node_pointer = text.slice(1);
             if(document.getElementById(node_pointer)){
@@ -147,7 +188,6 @@ HTMLCollection.prototype.hint = function(options){
             }
         }
 
-        if(text == undefined){return}
         hint_node_text.innerHTML = text;
         create_timeout = setTimeout(function(){
             if(prop.trigger == "click"){
@@ -181,7 +221,7 @@ HTMLCollection.prototype.hint = function(options){
 
             }
             
-            el.setup();
+            el.setup(e);
             el.isExists = true;
             /* TODO: Hold until */
 //			if(prop.wait > 0 && prop.holdOn > 0){
@@ -190,11 +230,11 @@ HTMLCollection.prototype.hint = function(options){
         }, prop.wait);
 
         //Cancel waitin
-        if(prop.trigger == "mouseover" && prop.wait > 0){
-            window.addEventListener("mouseout", function(){
-                clearTimeout(create_timeout);
-            });
-        }
+        // if(prop.trigger == "mouseover" && prop.wait > 0){
+        //     window.addEventListener("mouseout", function(){
+        //         clearTimeout(create_timeout);
+        //     });
+        // }
     };
 
     for(var i = 0; i < prop.count; i++){
