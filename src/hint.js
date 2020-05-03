@@ -19,7 +19,6 @@ HTMLCollection.prototype.hint = function(options){
         margin = 0,
         create_timeout,
         remove_timeout;
-    
         switch(options.trigger){
             case "click": break;
             default: options.trigger = "mouseover"; break;
@@ -35,11 +34,11 @@ HTMLCollection.prototype.hint = function(options){
         closeBy: options.closeBy || ["scroll", "resize", "clickOutside"],
         animate: options.animate || null,
         duration: options.animateDuration || 200,
-        style: options.theme || null,
+        style: options.theme || "white",
         data: options.text || null,
         position: options.vertical || "auto",
         pin: options.pin || false,
-        stickiness: options.stickiness || 16
+        stickiness: options.stickiness || 18
     };
     hint_holder.style = "position: absolute; left: 0; top: 0; height: 0; width: 100%";
     hint_node.classList.add("html-hint", prop.style);
@@ -61,6 +60,7 @@ HTMLCollection.prototype.hint = function(options){
         setup: function(e){
             hint_node.style = "";
             hint_node.style.position = "absolute";
+            hint_node.classList.remove("position-bottom");
             el.width = hint_node.getBoundingClientRect().width;
             if(el.width > prop.maxWidth){
                 el.width = prop.maxWidth;
@@ -170,7 +170,6 @@ HTMLCollection.prototype.hint = function(options){
                 hint_holder.remove();
             }
             el.isExists = false;
-            hint_node.classList.remove("position-bottom");
             clearTimeout(remove_timeout);
             el.width = 0;
         }
@@ -218,7 +217,12 @@ HTMLCollection.prototype.hint = function(options){
             if(prop.animate){
                 hint_node.classList.add(prop.animate);
                 setTimeout(function(){hint_node.classList.add("complete");}, 0);
-
+                hint_node.addEventListener("transitionend", function(){
+                    hint_node.style.pointerEvents = "auto";
+                });
+                hint_node.addEventListener("transitionstart", function(){
+                    hint_node.style.pointerEvents = "none";
+                });
             }
             
             el.setup(e);

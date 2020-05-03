@@ -107,9 +107,25 @@
   transform: translate3d(0, -30px, 0);
 }
 
-.html-hint.fadeDown.complete {
+.html-hint.fadeTop {
+  transition: transform .3s ease, opacity .3s ease;
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+}
+
+.html-hint.fadeOpposite {
+  transition: transform .3s ease, opacity .3s ease;
+  opacity: 0;
+  transform: translate3d(0, -30px, 0);
+}
+
+.html-hint.fadeOpposite.position-bottom {
+  transform: translate3d(0, 30px, 0);
+}
+
+.html-hint.complete {
   opacity: 1;
-  transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0) !important;
 }
 
 .html-hint-link {
