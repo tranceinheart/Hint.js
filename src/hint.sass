@@ -83,24 +83,8 @@ $dark-bg: rgba(0,0,0,0.8)
       &:after
         display: none
 
-  &.fadeDown // ANIMATIONS
+  &.animate // ANIMATIONS
     transition: transform .3s ease, opacity .3s ease
-    opacity: 0
-    transform: translate3d(0,-30px,0)
-  &.fadeTop
-    transition: transform .3s ease, opacity .3s ease
-    opacity: 0
-    transform: translate3d(0,30px,0)
-  &.fadeOpposite
-    transition: transform .3s ease, opacity .3s ease
-    opacity: 0
-    transform: translate3d(0,-30px,0)
-    &.position-bottom
-      transform: translate3d(0,30px,0)
-  &.complete
-    opacity: 1
-    transform: translate3d(0,0,0) !important
-
 
 .html-hint-link
   display: none

@@ -32,8 +32,7 @@ HTMLCollection.prototype.hint = function(options){
         wait: options.wait || 10,
         holdOn: options.hold || 0,
         closeBy: options.closeBy || ["scroll", "resize", "clickOutside"],
-        animate: options.animate || null,
-        duration: options.animateDuration || 200,
+        animate: options.animate || false,
         style: options.theme || "white",
         data: options.text || null,
         position: options.vertical || "auto",
@@ -115,7 +114,24 @@ HTMLCollection.prototype.hint = function(options){
                     hint_node.classList.add("position-bottom");
                     break;
             }
-            
+
+            if(prop.animate){
+                switch (el.position){
+                    case "bottom":
+                        hint_node.style.transform = "translate3d(0,30px,0)";
+                        break;
+                    case "top":
+                        hint_node.style.transform = "translate3d(0,-30px,0)";
+                        break;
+                }
+                setTimeout(function(){
+                    hint_node.style.opacity = "0";
+                    hint_node.classList.add("animate");
+                    hint_node.style.transform = "translate3d(0,0,0)";
+                    hint_node.style.opacity = "1";
+                }, 0);
+            }
+
             hint_node.style.left = el.x +"px";
             hint_node.style.top = el.y + "px";
             if(prop.pin){
@@ -131,7 +147,7 @@ HTMLCollection.prototype.hint = function(options){
         }
     };
     var safe_animation_remove = function(){
-        hint_node.classList.remove(prop.animate);
+        hint_node.classList.remove("animate");
         hint_node.removeEventListener("transitionend", safe_animation_remove);
         hint_holder.remove();
     };
@@ -164,7 +180,8 @@ HTMLCollection.prototype.hint = function(options){
             document.removeEventListener("scroll", removeHint);
             window.removeEventListener("resize", removeHint,  el.setup);
             if(prop.animate){
-                hint_node.classList.remove("complete");
+                hint_node.style.transform = "";
+                hint_node.style.opacity = "0";
                 hint_node.addEventListener("transitionend", safe_animation_remove);
             }else{
                 hint_holder.remove();
@@ -214,31 +231,12 @@ HTMLCollection.prototype.hint = function(options){
             }
 
             document.body.appendChild(hint_holder);
-            if(prop.animate){
-                hint_node.classList.add(prop.animate);
-                setTimeout(function(){hint_node.classList.add("complete");}, 0);
-                hint_node.addEventListener("transitionend", function(){
-                    hint_node.style.pointerEvents = "auto";
-                });
-                hint_node.addEventListener("transitionstart", function(){
-                    hint_node.style.pointerEvents = "none";
-                });
-            }
             
             el.setup(e);
             el.isExists = true;
-            /* TODO: Hold until */
-//			if(prop.wait > 0 && prop.holdOn > 0){
-//				holdUntil = new Date().now()
-//			}
+
         }, prop.wait);
 
-        //Cancel waitin
-        // if(prop.trigger == "mouseover" && prop.wait > 0){
-        //     window.addEventListener("mouseout", function(){
-        //         clearTimeout(create_timeout);
-        //     });
-        // }
     };
 
     for(var i = 0; i < prop.count; i++){
