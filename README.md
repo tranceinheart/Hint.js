@@ -78,17 +78,13 @@ Choose a box-ready style of hint
 
 Allow to force your own text (or HTML).
 
-==========
+**`noDelayMode:`** (`Integer`) (default: undefined) (ms)
 
-Options under development
-
-**`nonWaitMode:`** (`Integer`) (default: 5000) (ms)
-
-If you set a wait option, you also can set a time interval to off the wait option, not to make user already waited
+If you set a delay option, you can also set a time interval to turn off the wait delay
 
 
 ## Author
 
 Pavel Terehov
 
-Copyright &copy; 2020 Pavel Terehov. MIT License.
+Copyright &copy; 2020 Pavel Terekhov. MIT License.

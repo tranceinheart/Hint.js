@@ -15,8 +15,8 @@ HTMLCollection.prototype.hint = function(options){
         hint_node_text = document.createElement("div"),
         hint_node_pin = document.createElement("div"),
         hint_node_close_button = document.createElement("div"),
-        //hold,
         margin = 0,
+        noDelayMode_end,
         create_timeout,
         remove_timeout;
         switch(options.trigger){
@@ -29,7 +29,7 @@ HTMLCollection.prototype.hint = function(options){
         trigger: options.trigger,
         count: this.length,
         timer: options.timer > MIN_TIMER ? options.timer : MIN_TIMER,
-        wait: options.delay || 10,
+        wait: options.delay || MIN_TIMER,
         holdOn: options.hold || 0,
         closeBy: options.closeBy || ["scroll", "resize", "clickOutside"],
         animate: options.animate || false,
@@ -37,7 +37,9 @@ HTMLCollection.prototype.hint = function(options){
         data: options.text || null,
         position: options.vertical || "auto",
         pin: options.pin || false,
-        stickiness: options.stickiness || 18
+        noDelayMode: options.noDelayMode || MIN_TIMER,
+        stickiness: options.stickiness || 18,
+        initialWait: options.delay || MIN_TIMER
     };
     hint_holder.style = "position: absolute; left: 0; top: 0; height: 0; width: 100%";
     hint_node.classList.add("html-hint", prop.style);
@@ -95,9 +97,9 @@ HTMLCollection.prototype.hint = function(options){
             }
 
             switch (el.position){
-                case "middle":
-                    el.y = e.clientY + el.initial_node_box.height/2 - el.height;
-                    break;
+                // case "middle":
+                //     el.y = e.clientY + el.initial_node_box.height/2 - el.height;
+                //     break;
                 case "top":
                     if(e.clientY - el.initial_node_box.y > prop.stickiness){
                         el.y = el.initial_node_box.y + el.initial_node_box.height - prop.stickiness - el.height - margin;
@@ -124,8 +126,8 @@ HTMLCollection.prototype.hint = function(options){
                         hint_node.style.transform = "translate3d(0,-30px,0)";
                         break;
                 }
+                hint_node.style.opacity = "0";
                 setTimeout(function(){
-                    hint_node.style.opacity = "0";
                     hint_node.classList.add("animate");
                     hint_node.style.transform = "translate3d(0,0,0)";
                     hint_node.style.opacity = "1";
@@ -189,6 +191,9 @@ HTMLCollection.prototype.hint = function(options){
             el.isExists = false;
             clearTimeout(remove_timeout);
             el.width = 0;
+            if(prop.noDelayMode > MIN_TIMER){
+                noDelayMode_end = Date.now() +  prop.noDelayMode;
+            }
         }
     };
     var createHint = function(e) {
@@ -203,7 +208,14 @@ HTMLCollection.prototype.hint = function(options){
                 text = document.getElementById(node_pointer).innerHTML;
             }
         }
-
+        if(prop.noDelayMode > MIN_TIMER && noDelayMode_end != undefined){
+            if(noDelayMode_end > Date.now()){
+                prop.wait = MIN_TIMER;
+            }else{
+                prop.wait = prop.initialWait;
+            }
+        }
+        console.log(prop.wait);
         hint_node_text.innerHTML = text;
         create_timeout = setTimeout(function(){
             if(prop.trigger == "click"){
@@ -234,9 +246,16 @@ HTMLCollection.prototype.hint = function(options){
             
             el.setup(e);
             el.isExists = true;
-
+            if(prop.timer > MIN_TIMER){
+                setTimeout(safe_animation_remove, prop.timer);
+            }
         }, prop.wait);
-
+        //Cancel waiting
+        if(prop.trigger == "mouseover" && prop.wait > MIN_TIMER){
+            window.addEventListener("mouseout", function(){
+                clearTimeout(create_timeout);
+            });
+        }
     };
 
     for(var i = 0; i < prop.count; i++){
