@@ -49,7 +49,7 @@ Hides a hint automatically in milliseconds
 
 Time delay before showing (sometimes usefull when trigger is mouseover)
 
-**`vertical:`** (`"top" | "middle" | "bottom" | "auto"`) (default "auto")
+**`vertical:`** (`"top" | "bottom" | "auto"`) (default "auto")
 
 **`closeBy:`** (`Array`) (default: ["scroll", "resize", "clickOutside", "mouseOut"])
 
