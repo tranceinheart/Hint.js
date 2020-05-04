@@ -1,6 +1,8 @@
 # Hint.js
 A pure JS **responsible** hint maker
 
+## [DEMO](https://tranceinheart.github.io/Hint.js/)
+
 ## Quick Start
 
 Include the files
