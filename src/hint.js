@@ -215,7 +215,7 @@ HTMLCollection.prototype.hint = function(options){
                 prop.wait = prop.initialWait;
             }
         }
-        console.log(prop.wait);
+        
         hint_node_text.innerHTML = text;
         create_timeout = setTimeout(function(){
             if(prop.trigger == "click"){
@@ -247,7 +247,7 @@ HTMLCollection.prototype.hint = function(options){
             el.setup(e);
             el.isExists = true;
             if(prop.timer > MIN_TIMER){
-                setTimeout(safe_animation_remove, prop.timer);
+                remove_timeout = setTimeout(safe_animation_remove, prop.timer);
             }
         }, prop.wait);
         //Cancel waiting
