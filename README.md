@@ -89,4 +89,4 @@ If you set a delay option, you can also set a time interval to turn off the wait
 
 Pavel Terehov
 
-Copyright &copy; 2020 Pavel Terekhov. MIT License.
+Copyright &copy; 2020 Pavel Terehov. MIT License.
