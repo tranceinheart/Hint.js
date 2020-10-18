@@ -4,7 +4,7 @@
  * Responsible animated custom hints, not sensitive to overflow
  * Licensed under: SEE LICENSE IN https://github.com/OwlCarousel2/OwlCarousel2/blob/master/LICENSE
  */
-/*TODO: close button*/
+
 HTMLCollection.prototype.hint = function(options){
     if(options == null){
         options = {}
@@ -139,7 +139,7 @@ HTMLCollection.prototype.hint = function(options){
             hint_node.style.top = el.y + "px";
             if(prop.pin){
                 if(prop.pinOnCenter){
-                    hint_node_pin.style.left = el.initial_node_box.x - el.x + el.initial_node_box.width/2;
+                    hint_node_pin.style.left = el.initial_node_box.x - el.x + el.initial_node_box.width/2 + "px";
                 }else{
                     var position = el.center - el.x;
                     if(position < 9){
