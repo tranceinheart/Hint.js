@@ -37,6 +37,7 @@ HTMLCollection.prototype.hint = function(options){
         data: options.text || null,
         position: options.vertical || "auto",
         pin: options.pin || false,
+        pinOnCenter: options.pinOnCenter || false,
         noDelayMode: options.noDelayMode || MIN_TIMER,
         stickiness: options.stickiness || 18,
         initialWait: options.delay || MIN_TIMER
@@ -137,14 +138,18 @@ HTMLCollection.prototype.hint = function(options){
             hint_node.style.left = el.x +"px";
             hint_node.style.top = el.y + "px";
             if(prop.pin){
-                var position = el.center - el.x;
-                if(position < 9){
-                    position = 9;
+                if(prop.pinOnCenter){
+                    hint_node_pin.style.left = el.initial_node_box.x - el.x + el.initial_node_box.width/2;
+                }else{
+                    var position = el.center - el.x;
+                    if(position < 9){
+                        position = 9;
+                    }
+                    if(position > el.width - 9){
+                        position = el.width - 9;
+                    }
+                    hint_node_pin.style.left = position + "px";
                 }
-                if(position > el.width - 9){
-                    position = el.width - 9;
-                }
-                hint_node_pin.style.left = position + "px";
             }
         }
     };
