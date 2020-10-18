@@ -103,16 +103,16 @@ HTMLCollection.prototype.hint = function(options){
                 //     break;
                 case "top":
                     if(e.clientY - el.initial_node_box.y > prop.stickiness){
-                        el.y = el.initial_node_box.y + el.initial_node_box.height - prop.stickiness - el.height - margin;
+                        el.y = el.initial_node_box.y + el.initial_node_box.height - prop.stickiness - el.height - margin + window.pageYOffset;
                     }else{
-                        el.y = el.initial_node_box.y - el.height - margin;
+                        el.y = el.initial_node_box.y - el.height - margin + window.pageYOffset;
                     }
                     break;
                 case "bottom":
                     if((el.initial_node_box.y + el.initial_node_box.height) - e.clientY > prop.stickiness){
-                        el.y = el.initial_node_box.y + prop.stickiness + margin;
+                        el.y = el.initial_node_box.y + prop.stickiness + margin + window.pageYOffset;
                     }else{
-                        el.y = el.initial_node_box.y + el.initial_node_box.height + margin;
+                        el.y = el.initial_node_box.y + el.initial_node_box.height + margin + window.pageYOffset;
                     }
                     hint_node.classList.add("position-bottom");
                     break;
