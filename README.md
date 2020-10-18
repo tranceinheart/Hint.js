@@ -34,6 +34,10 @@ document.getElementsByClassName('your_class').hint({
 
 A little triangle near an initial div
 
+**`pinOnCenter:`** (`Boolean`) (default: false)
+
+Sets the pin by the cursor or by the center of the initial div
+
 **`maxWidth:`** (`Integer`) (default: 250)
 
 Allow to set max width
